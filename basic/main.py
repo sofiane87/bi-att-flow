@@ -88,7 +88,7 @@ def _train(config):
     graph_handler = GraphHandler(config, model)  # controls all tensors and variables in the graph, including loading /saving
 
     # Variables
-    sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True))
+    sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True, gpu_options = tf.GPUOptions(allow_growth = True)))
     graph_handler.initialize(sess)
 
     # Begin training
@@ -148,7 +148,7 @@ def _test(config):
     evaluator = MultiGPUF1Evaluator(config, models, tensor_dict=models[0].tensor_dict if config.vis else None)
     graph_handler = GraphHandler(config, model)
 
-    sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True))
+    sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True), gpu_options = tf.GPUOptions(allow_growth = True))
     graph_handler.initialize(sess)
     num_steps = math.ceil(test_data.num_examples / (config.batch_size * config.num_gpus))
     if 0 < config.test_num_batches < num_steps:
@@ -195,7 +195,7 @@ def _forward(config):
     evaluator = ForwardEvaluator(config, model)
     graph_handler = GraphHandler(config, model)  # controls all tensors and variables in the graph, including loading /saving
 
-    sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True))
+    sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True), gpu_options = tf.GPUOptions(allow_growth = True))
     graph_handler.initialize(sess)
 
     num_batches = math.ceil(test_data.num_examples / config.batch_size)
