@@ -136,20 +136,20 @@ class Model(object):
         self.tensor_dict['xx'] = xx
         self.tensor_dict['qq'] = qq
 
-        cell_fw = BasicLSTMCell(d, state_is_tuple=True)
-        cell_bw = BasicLSTMCell(d, state_is_tuple=True)
+        cell_fw = BasicLSTMCell(d, state_is_tuple=True, reuse=tf.get_variable_scope().reuse)
+        cell_bw = BasicLSTMCell(d, state_is_tuple=True, reuse=tf.get_variable_scope().reuse)
         d_cell_fw = SwitchableDropoutWrapper(cell_fw, self.is_train, input_keep_prob=config.input_keep_prob)
         d_cell_bw = SwitchableDropoutWrapper(cell_bw, self.is_train, input_keep_prob=config.input_keep_prob)
-        cell2_fw = BasicLSTMCell(d, state_is_tuple=True)
-        cell2_bw = BasicLSTMCell(d, state_is_tuple=True)
+        cell2_fw = BasicLSTMCell(d, state_is_tuple=True, reuse=tf.get_variable_scope().reuse)
+        cell2_bw = BasicLSTMCell(d, state_is_tuple=True, reuse=tf.get_variable_scope().reuse)
         d_cell2_fw = SwitchableDropoutWrapper(cell2_fw, self.is_train, input_keep_prob=config.input_keep_prob)
         d_cell2_bw = SwitchableDropoutWrapper(cell2_bw, self.is_train, input_keep_prob=config.input_keep_prob)
-        cell3_fw = BasicLSTMCell(d, state_is_tuple=True)
-        cell3_bw = BasicLSTMCell(d, state_is_tuple=True)
+        cell3_fw = BasicLSTMCell(d, state_is_tuple=True, reuse=tf.get_variable_scope().reuse)
+        cell3_bw = BasicLSTMCell(d, state_is_tuple=True, reuse=tf.get_variable_scope().reuse)
         d_cell3_fw = SwitchableDropoutWrapper(cell3_fw, self.is_train, input_keep_prob=config.input_keep_prob)
         d_cell3_bw = SwitchableDropoutWrapper(cell3_bw, self.is_train, input_keep_prob=config.input_keep_prob)
-        cell4_fw = BasicLSTMCell(d, state_is_tuple=True)
-        cell4_bw = BasicLSTMCell(d, state_is_tuple=True)
+        cell4_fw = BasicLSTMCell(d, state_is_tuple=True, reuse=tf.get_variable_scope().reuse)
+        cell4_bw = BasicLSTMCell(d, state_is_tuple=True, reuse=tf.get_variable_scope().reuse)
         d_cell4_fw = SwitchableDropoutWrapper(cell4_fw, self.is_train, input_keep_prob=config.input_keep_prob)
         d_cell4_bw = SwitchableDropoutWrapper(cell4_bw, self.is_train, input_keep_prob=config.input_keep_prob)
         x_len = tf.reduce_sum(tf.cast(self.x_mask, 'int32'), 2)  # [N, M]
@@ -295,16 +295,17 @@ class Model(object):
         self.ema = tf.train.ExponentialMovingAverage(self.config.decay)
         ema = self.ema
         tensors = tf.get_collection("ema/scalar", scope=self.scope) + tf.get_collection("ema/vector", scope=self.scope)
+
         ema_op = ema.apply(tensors)
         for var in tf.get_collection("ema/scalar", scope=self.scope):
             ema_var = ema.average(var)
             tf.summary.scalar(ema_var.op.name, ema_var)
-        for var in tf.get_collection("ema/vector", scope=self.scope):
-            ema_var = ema.average(var)
-            tf.summary.histogram(ema_var.op.name, ema_var)
+            for var in tf.get_collection("ema/vector", scope=self.scope):
+                ema_var = ema.average(var)
+                tf.summary.histogram(ema_var.op.name, ema_var)
 
-        with tf.control_dependencies([ema_op]):
-            self.loss = tf.identity(self.loss)
+                with tf.control_dependencies([ema_op]):
+                    self.loss = tf.identity(self.loss)
 
     def _build_var_ema(self):
         self.var_ema = tf.train.ExponentialMovingAverage(self.config.var_decay)

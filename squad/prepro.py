@@ -178,20 +178,27 @@ def prepro_each(args, data_type, start_ratio=0.0, stop_ratio=1.0, out_name="defa
                     answer_start = answer['answer_start']
                     answer_stop = answer_start + len(answer_text)
                     # TODO : put some function that gives word_start, word_stop here
-                    yi0, yi1 = get_word_span(context, xi, answer_start, answer_stop)
+                    yi0, yi1 = get_word_span(context, xi, answer_start, answer_stop)    #第一个词和最后一个词的句子和词索引
                     # yi0 = answer['answer_word_start'] or [0, 0]
                     # yi1 = answer['answer_word_stop'] or [0, 1]
                     assert len(xi[yi0[0]]) > yi0[1]
                     assert len(xi[yi1[0]]) >= yi1[1]
-                    w0 = xi[yi0[0]][yi0[1]]
-                    w1 = xi[yi1[0]][yi1[1]-1]
-                    i0 = get_word_idx(context, xi, yi0)
-                    i1 = get_word_idx(context, xi, (yi1[0], yi1[1]-1))
-                    cyi0 = answer_start - i0
-                    cyi1 = answer_stop - i1 - 1
+                    # print ('yi, yi1:')
+                    # print (yi0[0], yi0[1])
+                    # print (yi1[0], yi1[1]-1)
+                    w0 = xi[yi0[0]][yi0[1]]    # 获取答案的第一个词
+                    w1 = xi[yi1[0]][yi1[1]-1]  # 获取答案的最后一个词
+                    i0 = get_word_idx(context, xi, yi0)  # 获取第一个词在context中的start位置
+                    i1 = get_word_idx(context, xi, (yi1[0], yi1[1]-1))  # 获取最后一个词在context中的start位置
+                    cyi0 = answer_start - i0  # 减去偏移，从0开始， 获取第一个词的第一个字母的索引
+                    cyi1 = answer_stop - i1 - 1  # 获取最后一个词的最后一个字母的索引
+
                     # print(answer_text, w0[cyi0:], w1[:cyi1+1])
-                    assert answer_text[0] == w0[cyi0], (answer_text, w0, cyi0)
-                    assert answer_text[-1] == w1[cyi1]
+                    # print ('answer_text:', answer_text)
+                    # print ('w0:', w0)
+                    # print ('w1:', w1)
+                    assert answer_text[0] == w0[cyi0], (answer_text, w0, cyi0)  # 答案的第一个字母和第一个词的第一个字幕是否相同
+                    assert answer_text[-1] == w1[cyi1]  # 答案的最后一个字母和最后一个词的最后一个字母是否相同
                     assert cyi0 < 32, (answer_text, w0)
                     assert cyi1 < 32, (answer_text, w1)
 

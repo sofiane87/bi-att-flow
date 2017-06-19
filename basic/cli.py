@@ -4,17 +4,20 @@ import tensorflow as tf
 
 from basic.main import main as m
 
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "2"
+
 flags = tf.app.flags
 
 # Names and directories
 flags.DEFINE_string("model_name", "basic", "Model name [basic]")
-flags.DEFINE_string("data_dir", "data/squad", "Data dir [data/squad]")
+flags.DEFINE_string("data_dir", "data/squad_EQnA", "Data dir [data/squad]")# 数据路径
 flags.DEFINE_string("run_id", "0", "Run ID [0]")
 flags.DEFINE_string("out_base_dir", "out", "out base dir [out]")
 flags.DEFINE_string("forward_name", "single", "Forward name [single]")
-flags.DEFINE_string("answer_path", "", "Answer path []")
-flags.DEFINE_string("eval_path", "", "Eval path []")
-flags.DEFINE_string("load_path", "", "Load path []")
+flags.DEFINE_string("answer_path", "", "Answer path []")# 设置答案的路径
+flags.DEFINE_string("eval_path", "", "Eval path []")    # 设置评价脚本的路径
+flags.DEFINE_string("load_path", "", "Load path []")    # 设置加载的模型路径
 flags.DEFINE_string("shared_path", "", "Shared path []")
 
 # Device placement
@@ -104,7 +107,9 @@ flags.DEFINE_bool("dynamic_att", False, "Dynamic attention [False]")
 def main(_):
     config = flags.FLAGS
 
-    config.out_dir = os.path.join(config.out_base_dir, config.model_name, str(config.run_id).zfill(2))
+    # change out dir
+    config.out_dir = os.path.join(config.out_base_dir, config.model_name, str(config.run_id).zfill(2) )
+    print ('out dir = ' + config.out_dir)
 
     m(config)
 

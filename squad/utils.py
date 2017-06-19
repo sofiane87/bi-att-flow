@@ -1,7 +1,7 @@
 import re
 import numpy as np
 
-
+# 获取text中每个token的起始和终止索引， （sent_id, word_id） = (start, stop)
 def get_2d_spans(text, tokenss):
     spanss = []
     cur_idx = 0
@@ -18,7 +18,7 @@ def get_2d_spans(text, tokenss):
         spanss.append(spans)
     return spanss
 
-
+# 获取包含start和stop这个词的词在文中的索引
 def get_word_span(context, wordss, start, stop):
     spanss = get_2d_spans(context, wordss)
     idxs = []
