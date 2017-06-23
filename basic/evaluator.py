@@ -313,6 +313,8 @@ class F1Evaluator(LabeledEvaluator):
             for id_, xi, span, context in zip(data_set.data['ids'], data_set.data['x'], spans, data_set.data['p']):
                 span_name = []
                 for sp in span:
+                    print (sp[0], sp[1])
+                    print (_get2(context, xi, sp))
                     span_name.append(_get2(context, xi, sp))
                 id2answer_dict[id_] = '|'.join(span_name)
 
