@@ -5,7 +5,7 @@ from basic.read_data import DataSet
 from my.nltk_utils import span_f1
 from my.tensorflow import padded_reshape
 from my.utils import argmax
-from squad.utils import get_phrase, get_best_span, get_best_span_wy
+from squad.utils import get_phrase, get_best_span, get_best_span_wy, get_best_span_topk
 
 
 class Evaluation(object):
@@ -258,7 +258,7 @@ class F1Evaluator(LabeledEvaluator):
         else:
             global_step, yp, yp2, wyp, loss, vals = sess.run([self.global_step, self.yp, self.yp2, self.wyp, self.loss, list(self.tensor_dict.values())], feed_dict=feed_dict)
         y = data_set.data['y']
-        if self.config.squash:
+        if self.config.squash:  # False default      将(sent_id, token_id) 转换成(0, token_id_total)
             new_y = []
             for xi, yi in zip(data_set.data['x'], y):
                 new_yi = []
@@ -270,7 +270,7 @@ class F1Evaluator(LabeledEvaluator):
                     new_yi.append((new_start, new_stop))
                 new_y.append(new_yi)
             y = new_y
-        if self.config.single:
+        if self.config.single:  # False default     将(sent_id, toekn_id) 转换成(0, token_id)
             new_y = []
             for yi in y:
                 new_yi = []
@@ -283,9 +283,12 @@ class F1Evaluator(LabeledEvaluator):
 
         yp, yp2, wyp = yp[:data_set.num_examples], yp2[:data_set.num_examples], wyp[:data_set.num_examples]
         if self.config.wy:
-            spans, scores = zip(*[get_best_span_wy(wypi, self.config.th) for wypi in wyp])
+            spans, scores = zip(*[get_best_span_wy(wypi, self.config.th) for wypi in wyp])  # wyp [-1, M, JX]
         else:
-            spans, scores = zip(*[get_best_span(ypi, yp2i) for ypi, yp2i in zip(yp, yp2)])
+            if self.config.topk == 0:
+                spans, scores = zip(*[get_best_span(ypi, yp2i) for ypi, yp2i in zip(yp, yp2)])
+            else:
+                spans, scores = zip(*[get_best_span_topk(ypi, yp2i, self.config.topk) for ypi, yp2i in zip(yp, yp2)])
 
         def _get(xi, span):
             if len(xi) <= span[0][0]:
@@ -300,10 +303,19 @@ class F1Evaluator(LabeledEvaluator):
             if len(xi[span[0][0]]) <= span[1][1]:
                 return ""
             return get_phrase(context, xi, span)
-
-        id2answer_dict = {id_: _get2(context, xi, span)
-                          for id_, xi, span, context in zip(data_set.data['ids'], data_set.data['x'], spans, data_set.data['p'])}
-        id2score_dict = {id_: score for id_, score in zip(data_set.data['ids'], scores)}
+        
+        # topk answer
+        id2answer_dict = {}
+        for id_, xi, span, context in zip(data_set.data['ids'], data_set.data['x'], spans, data_set.data['p']):
+            span_name = []
+            for sp in span:
+                span_name.append(_get2(context, xi, sp))
+            id2answer_dict[id_] = '|'.join(span_name)
+                           
+        id2score_dict = {}
+        for id_, score in zip(data_set.data['ids'], scores):
+            id2score_dict[id_] = '|'.join(score)
+            
         id2answer_dict['scores'] = id2score_dict
         if self.config.na:
             id2na_dict = {id_: float(each) for id_, each in zip(data_set.data['ids'], na)}

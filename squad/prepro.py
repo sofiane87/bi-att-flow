@@ -159,7 +159,7 @@ def prepro_each(args, data_type, start_ratio=0.0, stop_ratio=1.0, out_name="defa
                     word_counter[xijk] += len(para['qas'])
                     lower_word_counter[xijk.lower()] += len(para['qas'])
                     for xijkl in xijk:
-                        char_counter[xijkl] += len(para['qas'])
+                        char_counter[xijkl] += len(para['qas']) # context 中的每个token，权重为question的个数
 
             rxi = [ai, pi]
             assert len(x) - 1 == ai
@@ -237,10 +237,29 @@ def prepro_each(args, data_type, start_ratio=0.0, stop_ratio=1.0, out_name="defa
     # add context here
     data = {'q': q, 'cq': cq, 'y': y, '*x': rx, '*cx': rcx, 'cy': cy,
             'idxs': idxs, 'ids': ids, 'answerss': answerss, '*p': rx, 'na': na}
+    
+    # q:    question token list
+    # cq:   question token charchater list
+    # y:    answer_start(sent_id, word_id), answer_stop+1(sent_id, word_id)
+    # cy:   answer_start在token中的id， answer_stop在token中的id
+    # rx:   [article_id, paragraph_id]
+    # rcx:  [article_id, paragraph_id]
+    # ids:  question id list
+    # idxs: question id list(start from 0)
+    
     shared = {'x': x, 'cx': cx, 'p': p,
               'word_counter': word_counter, 'char_counter': char_counter, 'lower_word_counter': lower_word_counter,
               'word2vec': word2vec_dict, 'lower_word2vec': lower_word2vec_dict}
 
+    # x:            context tokens list
+    # cx:           context tokens character list
+    # p:            context
+    # word_counter: context+question word_count
+    # lower_word_counter: 
+    # char_counter: context+question word_ch_count
+    # word2vec:
+    # lower_word2vec:
+    
     print("saving ...")
     save(args, data, shared, out_name)
 

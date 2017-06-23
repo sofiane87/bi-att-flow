@@ -36,6 +36,9 @@ flags.DEFINE_bool("wy", False, "Use wy for loss / eval? [False]")
 flags.DEFINE_bool("na", False, "Enable no answer strategy and learn bias? [False]")
 flags.DEFINE_float("th", 0.5, "Threshold [0.5]")
 
+# top K
+flags.DEFINE_integer("topk", 3, "score top k")
+
 # Training / test parameters
 flags.DEFINE_integer("batch_size", 60, "Batch size [60]")
 flags.DEFINE_integer("val_num_batches", 100, "validation num batches [100]")
