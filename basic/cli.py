@@ -37,7 +37,7 @@ flags.DEFINE_bool("na", False, "Enable no answer strategy and learn bias? [False
 flags.DEFINE_float("th", 0.5, "Threshold [0.5]")
 
 # top K
-flags.DEFINE_integer("topk", 3, "score top k")
+flags.DEFINE_integer("topk", 0, "score top k")
 
 # Training / test parameters
 flags.DEFINE_integer("batch_size", 60, "Batch size [60]")
@@ -111,7 +111,11 @@ def main(_):
     config = flags.FLAGS
 
     # change out dir
-    config.out_dir = os.path.join(config.out_base_dir, config.model_name, str(config.run_id).zfill(2) )
+    # config.out_dir = os.path.join(config.out_base_dir, config.model_name, str(config.run_id).zfill(2)  )
+    
+    # EQnA
+    config.out_dir = os.path.join(config.out_base_dir, config.model_name, str(config.run_id).zfill(2) + '_EQnA' )
+    
     print ('out dir = ' + config.out_dir)
 
     m(config)

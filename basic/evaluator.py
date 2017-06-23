@@ -305,23 +305,33 @@ class F1Evaluator(LabeledEvaluator):
             return get_phrase(context, xi, span)
         
         # topk answer
-        id2answer_dict = {}
-        for id_, xi, span, context in zip(data_set.data['ids'], data_set.data['x'], spans, data_set.data['p']):
-            span_name = []
-            for sp in span:
-                span_name.append(_get2(context, xi, sp))
-            id2answer_dict[id_] = '|'.join(span_name)
-                           
-        id2score_dict = {}
-        for id_, score in zip(data_set.data['ids'], scores):
-            id2score_dict[id_] = '|'.join(score)
+        if self.config.topk == 0:
+            id2answer_dict = {id_: _get2(context, xi, span) for id_, xi, span, context in zip(data_set.data['ids'], data_set.data['x'], spans, data_set.data['p'])}
+            id2score_dict = {id_: score for id_, score in zip(data_set.data['ids'], scores)}
+        else:
+            id2answer_dict = {}
+            for id_, xi, span, context in zip(data_set.data['ids'], data_set.data['x'], spans, data_set.data['p']):
+                span_name = []
+                for sp in span:
+                    span_name.append(_get2(context, xi, sp))
+                id2answer_dict[id_] = '|'.join(span_name)
+
+            id2score_dict = {}
+            for id_, score in zip(data_set.data['ids'], scores):
+                id2score_dict[id_] = '|'.join(str(score))
             
         id2answer_dict['scores'] = id2score_dict
         if self.config.na:
             id2na_dict = {id_: float(each) for id_, each in zip(data_set.data['ids'], na)}
             id2answer_dict['na'] = id2na_dict
-        correct = [self.__class__.compare2(yi, span) for yi, span in zip(y, spans)]
-        f1s = [self.__class__.span_f1(yi, span) for yi, span in zip(y, spans)]
+        
+        if self.config.topk == 0:
+            correct = [self.__class__.compare2(yi, span) for yi, span in zip(y, spans)]
+            f1s = [self.__class__.span_f1(yi, span) for yi, span in zip(y, spans)]
+        else:
+            correct = [self.__class__.compare2(yi, span[0]) for yi, span in zip(y, spans)]
+            f1s = [self.__class__.span_f1(yi, span[0]) for yi, span in zip(y, spans)]
+        
         tensor_dict = dict(zip(self.tensor_dict.keys(), vals))
         e = F1Evaluation(data_set.data_type, int(global_step), idxs, yp.tolist(), yp2.tolist(), y,
                          correct, float(loss), f1s, id2answer_dict, tensor_dict=tensor_dict)
