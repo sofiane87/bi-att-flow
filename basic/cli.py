@@ -5,7 +5,7 @@ import tensorflow as tf
 from basic.main import main as m
 
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "2"
+# os.environ["CUDA_VISIBLE_DEVICES"] = "2"
 
 flags = tf.app.flags
 
