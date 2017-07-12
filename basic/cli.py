@@ -111,10 +111,10 @@ def main(_):
     config = flags.FLAGS
 
     # change out dir
-    # config.out_dir = os.path.join(config.out_base_dir, config.model_name, str(config.run_id).zfill(2)  )
+    config.out_dir = os.path.join(config.out_base_dir, config.model_name, str(config.run_id).zfill(2)  )
     
     # EQnA
-    config.out_dir = os.path.join(config.out_base_dir, config.model_name, str(config.run_id).zfill(2) + '_EQnA' )
+    # config.out_dir = os.path.join(config.out_base_dir, config.model_name, str(config.run_id).zfill(2) + '_EQnA' )
     
     print ('out dir = ' + config.out_dir)
 

@@ -282,7 +282,7 @@ class Model(object):
         q_len = tf.reduce_sum(tf.cast(self.q_mask, 'int32'), 1)  # [N]
 
         # context modeling
-        u, h = context_embedding(config, 'context_emb_1', xx, qq, self.x_mask, self.q_mask, self.is_train)
+        u, h = context_embedding(config, 'context_emb_1', xx, qq, x_len, q_len, self.is_train)
         self.tensor_dict['u'] = u
         self.tensor_dict['h'] = h
 
@@ -293,10 +293,10 @@ class Model(object):
                 attention(config, 'attention_1', u, h, self.x_mask, self.q_mask, self.tensor_dict, self.is_train) 
 
             # modeling  layer
-            g0, g1 = modeling_layer(config, 'modeling_1', p0, first_cell_fw, second_cell_fw, first_cell_bw, second_cell_bw, self.x_len, self.q_len, self.is_train)
+            g0, g1 = modeling_layer(config, 'modeling_1', p0, first_cell_fw, second_cell_fw, first_cell_bw, second_cell_bw, x_len, q_len, self.is_train)
 
             # output layer
-            g1, g2, flat_logits, flat_logits2, yp, yp2, wyp = output_layer(config, 'output1', p0, g1, self.x_mask, self.x_len, self.is_train)
+            g1, g2, flat_logits, flat_logits2, yp, yp2, wyp = output_layer(config, 'output1', p0, g1, self.x_mask, x_len, self.is_train)
 
             self.tensor_dict['g1'] = g1
             self.tensor_dict['g2'] = g2
