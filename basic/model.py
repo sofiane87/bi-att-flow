@@ -102,8 +102,15 @@ def context_embedding(config, scope, xx, qq, x_len, q_len, is_train):
     return u, h
     
 
-def attention(config, scope, u, h, x_mask, q_mask, tensor_dict, is_train):
-    d = config.hidden_size
+def attention(config, scope, x, q, u, h, x_mask, q_mask, tensor_dict, is_train):
+    N, M, JX, JQ, VW, VC, d, W = \
+        config.batch_size, config.max_num_sents, config.max_sent_size, \
+        config.max_ques_size, config.word_vocab_size, config.char_vocab_size, config.hidden_size, \
+        config.max_word_size
+
+    JX = tf.shape(x)[2]
+    JQ = tf.shape(q)[1]
+    M = tf.shape(x)[1]
     with tf.variable_scope(scope):
         cell2_fw = BasicLSTMCell(d, state_is_tuple=True, reuse=tf.get_variable_scope().reuse)
         cell2_bw = BasicLSTMCell(d, state_is_tuple=True, reuse=tf.get_variable_scope().reuse)
@@ -146,11 +153,15 @@ def modeling_layer(cofing, scope, p0, first_cell_fw, second_cell_fw, first_cell_
 
     return g0, g1
 
-def output_layer(config, scope, p0, g1, x_mask, x_len, is_train):
+def output_layer(config, scope, x, q, p0, g1, x_mask, x_len, is_train):
     N, M, JX, JQ, VW, VC, d, W = \
         config.batch_size, config.max_num_sents, config.max_sent_size, \
         config.max_ques_size, config.word_vocab_size, config.char_vocab_size, config.hidden_size, \
         config.max_word_size
+
+    JX = tf.shape(x)[2]
+    JQ = tf.shape(q)[1]
+    M = tf.shape(x)[1]
 
     with tf.variable_scope(scope):
         cell4_fw = BasicLSTMCell(d, state_is_tuple=True, reuse=tf.get_variable_scope().reuse)
@@ -290,13 +301,13 @@ class Model(object):
 
             # attention
             p0, first_cell_fw, second_cell_fw, first_cell_bw, second_cell_bw, q_mask = \
-                attention(config, 'attention_1', u, h, self.x_mask, self.q_mask, self.tensor_dict, self.is_train) 
+                attention(config, 'attention_1', self.x, self.q, u, h, self.x_mask, self.q_mask, self.tensor_dict, self.is_train) 
 
             # modeling  layer
             g0, g1 = modeling_layer(config, 'modeling_1', p0, first_cell_fw, second_cell_fw, first_cell_bw, second_cell_bw, x_len, q_len, self.is_train)
 
             # output layer
-            g1, g2, flat_logits, flat_logits2, yp, yp2, wyp = output_layer(config, 'output1', p0, g1, self.x_mask, x_len, self.is_train)
+            g1, g2, flat_logits, flat_logits2, yp, yp2, wyp = output_layer(config, 'output1', self.x, self.q, p0, g1, self.x_mask, x_len, self.is_train)
 
             self.tensor_dict['g1'] = g1
             self.tensor_dict['g2'] = g2
