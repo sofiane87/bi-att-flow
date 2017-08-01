@@ -62,16 +62,65 @@ def _config_debug(config):
         config.test_num_batches = 2
 
 
+def _join_dataset(dataset_1, dataset_2, batch_size, num_gpus, num_steps, shuffle=False, cluster=False, model=None):
+    stop = False
+    gen1 = dataset_1.get_multi_batches(batch_size, num_gpus, num_steps=num_steps, shuffle=shuffle, cluster=cluster)
+    gen2 = dataset_2.get_multi_batches(batch_size, num_gpus, num_steps=num_steps, shuffle=shuffle, cluster=cluster)
+    while not stop:
+        # rand = np.random.randint(2)
+        rand = 1
+        next_batch = None
+        print(rand)
+        if rand:
+            try:
+                next_batch = next(gen1)
+                model.model_id_value = 1
+            except:
+                next_batch = None
+        
+        if not rand or next_batch is None:
+            try:
+                next_batch = next(gen2)
+                model.model_id_value  = 0
+            except:
+                next_batch = None
+        
+        if next_batch is None:
+            try:
+                next_batch = next(gen1)
+                model.model_id_value = 1
+            except:
+                next_batch = None
+        
+        if next_batch is None:
+            stop = True
+        else:
+            yield next_batch
+        
+        
+        
+
+
+
+
+
 def _train(config):
     data_filter = get_squad_data_filter(config)
-    train_data = read_data(config, 'train', config.load, data_filter=data_filter)
-    dev_data = read_data(config, 'dev', True, data_filter=data_filter)
-    update_config(config, [train_data, dev_data])
+    train_data_1 = read_data(config, 'train', config.load, data_filter=data_filter, data_set_id=1)
+    dev_data = read_data(config, 'dev', True, data_filter=data_filter, data_set_id=1)
+
+    train_data_2 = read_data(config, 'train', config.load, data_filter=data_filter, data_set_id=2)
+    dev_data_2 = read_data(config, 'dev', True, data_filter=data_filter, data_set_id=2)
+
+    update_config(config, [train_data_1, dev_data, train_data_2, dev_data_2])
 
     _config_debug(config)
 
-    word2vec_dict = train_data.shared['lower_word2vec'] if config.lower_word else train_data.shared['word2vec']
-    word2idx_dict = train_data.shared['word2idx']
+    word2vec_dict_1 = train_data_1.shared['lower_word2vec'] if config.lower_word else train_data_1.shared['word2vec']
+    word2vec_dict_2 = train_data_2.shared['lower_word2vec'] if config.lower_word else train_data_2.shared['word2vec']
+    word2vec_dict = {**word2vec_dict_1, **word2vec_dict_2}
+    word2idx_dict = {**train_data_1.shared['word2idx'],**train_data_2.shared['word2idx']}
+
     idx2vec_dict = {word2idx_dict[word]: vec for word, vec in word2vec_dict.items() if word in word2idx_dict}
     emb_mat = np.array([idx2vec_dict[idx] if idx in idx2vec_dict
                         else np.random.multivariate_normal(np.zeros(config.word_emb_size), np.eye(config.word_emb_size))
@@ -92,10 +141,12 @@ def _train(config):
     graph_handler.initialize(sess)
 
     # Begin training
-    num_steps = config.num_steps or int(math.ceil(train_data.num_examples / (config.batch_size * config.num_gpus))) * config.num_epochs
+    num_steps = config.num_steps or int(math.ceil((train_data_1.num_examples) / 
+        (config.batch_size * config.num_gpus))) * config.num_epochs
     global_step = 0
-    for batches in tqdm(train_data.get_multi_batches(config.batch_size, config.num_gpus,
-                                                     num_steps=num_steps, shuffle=True, cluster=config.cluster), total=num_steps):
+    for batches in tqdm(_join_dataset(train_data_1, train_data_2, config.batch_size, config.num_gpus,
+                                                     num_steps=num_steps//2, shuffle=True, cluster=config.cluster, model=models[0]), total=num_steps):
+
         global_step = sess.run(model.global_step) + 1  # +1 because all calculations are done after step
         get_summary = global_step % config.log_period == 0
         loss, summary, train_op = trainer.step(sess, batches, get_summary=get_summary)
@@ -110,16 +161,39 @@ def _train(config):
             continue
         # Occasional evaluation
         if global_step % config.eval_period == 0:
+            models[0].model_id_value=1
             num_steps = math.ceil(dev_data.num_examples / (config.batch_size * config.num_gpus))
             if 0 < config.val_num_batches < num_steps:
                 num_steps = config.val_num_batches
             e_train = evaluator.get_evaluation_from_batches(
-                sess, tqdm(train_data.get_multi_batches(config.batch_size, config.num_gpus, num_steps=num_steps), total=num_steps)
+                sess, tqdm(train_data_1.get_multi_batches(config.batch_size, config.num_gpus, num_steps=num_steps), total=num_steps)
             )
             graph_handler.add_summaries(e_train.summaries, global_step)
             e_dev = evaluator.get_evaluation_from_batches(
                 sess, tqdm(dev_data.get_multi_batches(config.batch_size, config.num_gpus, num_steps=num_steps), total=num_steps))
             graph_handler.add_summaries(e_dev.summaries, global_step)
+
+            print("\n---------------------------------------------")
+            print(e_train)
+            print(e_dev)
+            print("\n+++++++++++++++++++++++++++++++++++++++++++++")
+
+            models[0].model_id_value=0
+            num_steps = math.ceil(dev_data.num_examples / (config.batch_size * config.num_gpus))
+            if 0 < config.val_num_batches < num_steps:
+                num_steps = config.val_num_batches
+            e_train = evaluator.get_evaluation_from_batches(
+                sess, tqdm(train_data_1.get_multi_batches(config.batch_size, config.num_gpus, num_steps=num_steps), total=num_steps)
+            )
+            graph_handler.add_summaries(e_train.summaries, global_step)
+            e_dev = evaluator.get_evaluation_from_batches(
+                sess, tqdm(dev_data.get_multi_batches(config.batch_size, config.num_gpus, num_steps=num_steps), total=num_steps))
+            graph_handler.add_summaries(e_dev.summaries, global_step)
+
+            print("\n&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
+            print(e_train)
+            print(e_dev)
+            print("\n+++++++++++++++++++++++++++++++++++++++++++++")
 
             if config.dump_eval:
                 graph_handler.dump_eval(e_dev)

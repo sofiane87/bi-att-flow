@@ -14,8 +14,10 @@ class Trainer(object):
         self.var_list = model.get_var_list()
         self.global_step = model.get_global_step()
         self.summary = model.summary
-        self.grads = self.opt.compute_gradients(self.loss, var_list=self.var_list)
-        self.train_op = self.opt.apply_gradients(self.grads, global_step=self.global_step)
+        # self.grads = self.opt.compute_gradients(self.loss, var_list=self.var_list)
+        # self.train_op = self.opt.apply_gradients(self.grads, global_step=self.global_step)
+        self.train_op = self.opt.minimize(self.loss, global_step=self.global_step)
+
 
     def get_train_op(self):
         return self.train_op
@@ -54,8 +56,9 @@ class MultiGPUTrainer(object):
                 grads_list.append(grads)
 
         self.loss = tf.add_n(losses)/len(losses)
-        self.grads = average_gradients(grads_list)
-        self.train_op = self.opt.apply_gradients(self.grads, global_step=self.global_step)
+        # self.grads = average_gradients(grads_list)
+        # self.train_op = self.opt.apply_gradients(self.grads, global_step=self.global_step)
+        self.train_op = self.opt.minimize(self.loss, global_step=self.global_step)
 
     def step(self, sess, batches, get_summary=False):
         assert isinstance(sess, tf.Session)

@@ -11,7 +11,8 @@ flags = tf.app.flags
 
 # Names and directories
 flags.DEFINE_string("model_name", "basic", "Model name [basic]")
-flags.DEFINE_string("data_dir", "data/squad", "Data dir [data/squad]")# 数据路径
+flags.DEFINE_string("data_dir1", "data/squad", "Data dir [data/squad]")# 数据路径
+flags.DEFINE_string("data_dir2", "data/sciq", "Data dir [data/sciq]")
 flags.DEFINE_string("run_id", "0", "Run ID [0]")
 flags.DEFINE_string("out_base_dir", "out", "out base dir [out]")
 flags.DEFINE_string("forward_name", "single", "Forward name [single]")
@@ -44,7 +45,7 @@ flags.DEFINE_integer("batch_size", 60, "Batch size [60]")
 flags.DEFINE_integer("val_num_batches", 100, "validation num batches [100]")
 flags.DEFINE_integer("test_num_batches", 0, "test num batches [0]")
 flags.DEFINE_integer("num_epochs", 12, "Total number of epochs for training [12]")
-flags.DEFINE_integer("num_steps", 20000, "Number of steps [20000]")
+flags.DEFINE_integer("num_steps", 200, "Number of steps [20000]")
 flags.DEFINE_integer("load_step", 0, "load step [0]")
 flags.DEFINE_float("init_lr", 0.001, "Initial learning rate [0.001]")
 flags.DEFINE_float("input_keep_prob", 0.8, "Input keep prob for the dropout of LSTM weights [0.8]")
@@ -106,6 +107,7 @@ flags.DEFINE_bool("q2c_att", True, "question-to-context attention? [True]")
 flags.DEFINE_bool("c2q_att", True, "context-to-question attention? [True]")
 flags.DEFINE_bool("dynamic_att", False, "Dynamic attention [False]")
 
+flags.DEFINE_bool("train_cross", False, "keep separated models or train cross stitching")
 
 def main(_):
     config = flags.FLAGS

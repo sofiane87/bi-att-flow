@@ -11,6 +11,30 @@ from my.tensorflow.nn import softsel, get_logits, highway_network, multi_conv1d
 from my.tensorflow.rnn import bidirectional_dynamic_rnn
 from my.tensorflow.rnn_cell import SwitchableDropoutWrapper, AttentionCell
 
+def cross_stitch(scope, mat1, mat2, config):
+    with tf.variable_scope(scope):
+        if config.train_cross:
+            AA = tf.get_variable("cross_stitchAA", shape=[], dtype='float')
+            AB = tf.get_variable("cross_stitchAB", shape=[], dtype='float')
+            BA = tf.get_variable("cross_stitchBA", shape=[], dtype='float')
+            BB = tf.get_variable("cross_stitchBB", shape=[], dtype='float')
+        else:
+            zero = tf.constant(0.0) 
+            one = tf.constant(1.0) 
+            AA = tf.get_variable("cross_stitchAA", dtype='float', trainable=False, initializer=one)
+            AB = tf.get_variable("cross_stitchAB", dtype='float', trainable=False, initializer=zero)
+            BA = tf.get_variable("cross_stitchBA", dtype='float', trainable=False, initializer=zero)
+            BB = tf.get_variable("cross_stitchBB", dtype='float', trainable=False, initializer=one)
+        
+        mat1_ret = mat1*AA+mat2*AB
+        mat2_ret = mat1*BA+mat2*BB
+    
+    return (mat1_ret, mat2_ret)
+                
+
+
+
+
 def embedding(config, scope, cx, cq, x, q, new_emb_mat, is_train):
     N, M, JX, JQ, VW, VC, d, W = \
         config.batch_size, config.max_num_sents, config.max_sent_size, \
@@ -242,7 +266,8 @@ class Model(object):
         self.is_train = tf.placeholder('bool', [], name='is_train')
         self.new_emb_mat = tf.placeholder('float', [None, config.word_emb_size], name='new_emb_mat')
         self.na = tf.placeholder('bool', [N], name='na')
-        self.model_id = tf.placeholder('int32', [], name='model_id')
+        self.model_id = tf.placeholder('float', [], name='model_id')
+        self.model_id_value = 1
 
         # Define misc
         self.tensor_dict = {}
@@ -293,7 +318,16 @@ class Model(object):
         q_len = tf.reduce_sum(tf.cast(self.q_mask, 'int32'), 1)  # [N]
 
         # context modeling
-        u, h = context_embedding(config, 'context_emb_1', xx, qq, x_len, q_len, self.is_train)
+        u_1, h_1 = context_embedding(config, 'context_emb_1', xx, qq, x_len, q_len, self.is_train)
+        u_2, h_2 = context_embedding(config, 'context_emb_2', xx, qq, x_len, q_len, self.is_train)
+
+        u_a, u_b = cross_stitch('u_stitching',u_1, u_2, config)
+        h_a, h_b = cross_stitch('h_stitching',h_1, h_2, config)
+
+        u = self.model_id*u_a + (1.0-self.model_id)*u_b
+        h = self.model_id*h_a + (1.0-self.model_id)*h_b
+
+
         self.tensor_dict['u'] = u
         self.tensor_dict['h'] = h
 
@@ -304,7 +338,15 @@ class Model(object):
                 attention(config, 'attention_1', self.x, self.q, u, h, self.x_mask, self.q_mask, self.tensor_dict, self.is_train) 
 
             # modeling  layer
-            g0, g1 = modeling_layer(config, 'modeling_1', p0, first_cell_fw, second_cell_fw, first_cell_bw, second_cell_bw, x_len, q_len, self.is_train)
+            g0_1, g1_1 = modeling_layer(config, 'modeling_1', p0, first_cell_fw, second_cell_fw, first_cell_bw, second_cell_bw, x_len, q_len, self.is_train)
+            g0_2, g1_2 = modeling_layer(config, 'modeling_1', p0, first_cell_fw, second_cell_fw, first_cell_bw, second_cell_bw, x_len, q_len, self.is_train)
+
+            g0_a, g0_b = cross_stitch('g0_stitching',g0_1, g0_2, config)
+            g1_a, g1_b = cross_stitch('g1_stitching',g1_1, g1_2, config)
+
+            g0 = self.model_id*g0_a + (1-self.model_id)*g0_b
+            g1 = self.model_id*g1_a + (1-self.model_id)*g1_b
+
 
             # output layer
             g1, g2, flat_logits, flat_logits2, yp, yp2, wyp = output_layer(config, 'output1', self.x, self.q, p0, g1, self.x_mask, x_len, self.is_train)
@@ -447,6 +489,7 @@ class Model(object):
         feed_dict[self.cq] = cq
         feed_dict[self.q_mask] = q_mask
         feed_dict[self.is_train] = is_train
+        feed_dict[self.model_id] = self.model_id_value
         if config.use_glove_for_unk:
             feed_dict[self.new_emb_mat] = batch.shared['new_emb_mat']
 

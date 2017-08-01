@@ -155,9 +155,13 @@ def load_metadata(config, data_type):
         return metadata
 
 
-def read_data(config, data_type, ref, data_filter=None):
-    data_path = os.path.join(config.data_dir, "data_{}.json".format(data_type))
-    shared_path = os.path.join(config.data_dir, "shared_{}.json".format(data_type))
+def read_data(config, data_type, ref, data_filter=None, data_set_id=1):
+    if data_set_id == 1:
+        data_path = os.path.join(config.data_dir1, "data_{}.json".format(data_type))
+        shared_path = os.path.join(config.data_dir1, "shared_{}.json".format(data_type))
+    else:
+        data_path = os.path.join(config.data_dir2, "data_{}.json".format(data_type))
+        shared_path = os.path.join(config.data_dir2, "shared_{}.json".format(data_type))
     with open(data_path, 'r') as fh:
         data = json.load(fh)
     with open(shared_path, 'r') as fh:

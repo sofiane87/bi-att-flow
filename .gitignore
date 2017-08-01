@@ -1,0 +1,9 @@
+out/
+venv/
+.vscode/
+data/
+sciq/
+tf12/
+__pycache__/
+*.py[cod]
+*$py.class
