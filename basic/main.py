@@ -98,11 +98,6 @@ def _join_dataset(dataset_1, dataset_2, batch_size, num_gpus, num_steps, shuffle
             yield next_batch
         
         
-        
-
-
-
-
 
 def _train(config):
     data_filter = get_squad_data_filter(config)

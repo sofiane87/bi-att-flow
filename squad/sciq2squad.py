@@ -53,7 +53,7 @@ def convert(args):
             q_id += 1
         
         data_output = {'data':[{
-            'title': 'SciQ dataset',
+            'title': 'squad dataset',
             'paragraphs': paragraphs
         }]}
 

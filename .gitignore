@@ -2,7 +2,7 @@ out/
 venv/
 .vscode/
 data/
-sciq/
+squad/
 tf12/
 __pycache__/
 *.py[cod]

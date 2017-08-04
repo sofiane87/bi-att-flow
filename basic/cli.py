@@ -12,7 +12,7 @@ flags = tf.app.flags
 # Names and directories
 flags.DEFINE_string("model_name", "basic", "Model name [basic]")
 flags.DEFINE_string("data_dir1", "data/squad", "Data dir [data/squad]")# 数据路径
-flags.DEFINE_string("data_dir2", "data/sciq", "Data dir [data/sciq]")
+flags.DEFINE_string("data_dir2", "data/squad", "Data dir [data/squad]")
 flags.DEFINE_string("run_id", "0", "Run ID [0]")
 flags.DEFINE_string("out_base_dir", "out", "out base dir [out]")
 flags.DEFINE_string("forward_name", "single", "Forward name [single]")

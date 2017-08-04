@@ -156,6 +156,11 @@ def load_metadata(config, data_type):
 
 
 def read_data(config, data_type, ref, data_filter=None, data_set_id=1):
+
+
+
+
+
     if data_set_id == 1:
         data_path = os.path.join(config.data_dir1, "data_{}.json".format(data_type))
         shared_path = os.path.join(config.data_dir1, "shared_{}.json".format(data_type))
@@ -178,6 +183,8 @@ def read_data(config, data_type, ref, data_filter=None, data_set_id=1):
             each = {key: val for key, val in zip(keys, vals)}
             mask.append(data_filter(each, shared))
         valid_idxs = [idx for idx in range(len(mask)) if mask[idx]]
+
+    print(each)
 
     print("Loaded {}/{} examples from {}".format(len(valid_idxs), num_examples, data_type))
 
