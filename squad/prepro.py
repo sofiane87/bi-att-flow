@@ -18,7 +18,7 @@ def main():
 
 def get_args():
     parser = argparse.ArgumentParser()
-    home = os.path.expanduser("~")
+    home = os.path.expanduser("~/bi-att-flow")
     source_dir = os.path.join(home, "data", "squad")
     target_dir = "data/squad"
     glove_dir = os.path.join(home, "data", "glove")
