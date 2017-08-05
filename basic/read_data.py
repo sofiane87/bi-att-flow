@@ -230,7 +230,7 @@ def read_data(config, data_type, ref, data_filter=None, data_set_id=1):
         shared['new_emb_mat'] = new_emb_mat
 
 
-    if config.use_pos :
+    if config.use_pos:
         if data_set_id == 1:
             data_path_pos = os.path.join(config.data_pos_dir1, "data_{}.json".format(data_type))
             shared_path_pos = os.path.join(config.data_pos_dir1, "shared_{}.json".format(data_type))
