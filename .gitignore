@@ -4,5 +4,4 @@ venv/
 data/
 tf12/
 __pycache__/
-*.py[cod]
 *$py.class
