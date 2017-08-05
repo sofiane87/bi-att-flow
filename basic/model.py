@@ -313,7 +313,7 @@ class Model(object):
 
         if self.config.use_pos:
             xx = tf.concat([xx,self.x_pos],axis=3)
-            qq = tf.concat([q,self.q_pos],axis=2)
+            qq = tf.concat([qq,self.q_pos],axis=2)
 
         # highway network
         xx, qq = highway_layer(config, "highway_1", xx, qq, self.is_train)
