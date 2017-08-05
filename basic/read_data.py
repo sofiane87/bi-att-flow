@@ -244,7 +244,7 @@ def read_data(config, data_type, ref, data_filter=None, data_set_id=1):
             data['q_pos'] = data_pos['q']
         with open(shared_path, 'r') as fh:
             shared_pos = json.load(fh)
-            shared['x_pos'] = shared_pos['x']
+            shared['x_pos'] = shared_pos['p']
 
 
 
