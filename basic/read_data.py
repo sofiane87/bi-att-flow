@@ -159,8 +159,6 @@ def read_data(config, data_type, ref, data_filter=None, data_set_id=1):
 
 
 
-
-
     if data_set_id == 1:
         data_path = os.path.join(config.data_dir1, "data_{}.json".format(data_type))
         shared_path = os.path.join(config.data_dir1, "shared_{}.json".format(data_type))
@@ -184,7 +182,7 @@ def read_data(config, data_type, ref, data_filter=None, data_set_id=1):
             mask.append(data_filter(each, shared))
         valid_idxs = [idx for idx in range(len(mask)) if mask[idx]]
 
-    print(each)
+    # print(each)
 
     print("Loaded {}/{} examples from {}".format(len(valid_idxs), num_examples, data_type))
 
@@ -230,6 +228,25 @@ def read_data(config, data_type, ref, data_filter=None, data_set_id=1):
         # print("{}/{} unique words have corresponding glove vectors.".format(len(idx2vec_dict), len(word2idx_dict)))
         new_emb_mat = np.array([idx2vec_dict[idx] for idx in range(len(idx2vec_dict))], dtype='float32')
         shared['new_emb_mat'] = new_emb_mat
+
+
+    if config.use_pos :
+        if data_set_id == 1:
+            data_path_pos = os.path.join(config.data_pos_dir1, "data_{}.json".format(data_type))
+            shared_path_pos = os.path.join(config.data_pos_dir1, "shared_{}.json".format(data_type))
+
+        if data_set_id == 2:
+            data_path_pos = os.path.join(config.data_pos_dir2, "data_{}.json".format(data_type))
+            shared_path_pos = os.path.join(config.data_pos_dir2, "shared_{}.json".format(data_type))
+
+        with open(data_path_pos, 'r') as fh:
+            data_pos = json.load(fh)
+            data['q_pos'] = data_pos['q']
+        with open(shared_path, 'r') as fh:
+            shared_pos = json.load(fh)
+            shared['x_pos'] = shared_pos['x']
+
+
 
     data_set = DataSet(data, data_type, shared=shared, valid_idxs=valid_idxs)
     return data_set
@@ -319,6 +336,9 @@ def update_config(config, data_sets):
     config.char_vocab_size = len(data_sets[0].shared['char2idx'])
     config.word_emb_size = len(next(iter(data_sets[0].shared['word2vec'].values())))
     config.word_vocab_size = len(data_sets[0].shared['word2idx'])
+    if config.use_pos:
+        from squad.pos_processing import get_pos_dimension
+        config.pos_dim = get_pos_dimension()
 
     if config.single:
         config.max_num_sents = 1

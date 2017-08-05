@@ -76,7 +76,8 @@ def process_tokens(temp_tokens):
         # \u2013 is en-dash. Used for number to nubmer
         # l = ("-", "\u2212", "\u2014", "\u2013")
         # l = ("\u2013",)
-        tokens.extend(re.split("([{}])".format("".join(l)), token))
+        updated_token = [ word for word in re.split("([{}])".format("".join(l)), token) if len(word) != 0]
+        tokens.extend(updated_token)
     return tokens
 
 

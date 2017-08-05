@@ -13,6 +13,8 @@ flags = tf.app.flags
 flags.DEFINE_string("model_name", "basic", "Model name [basic]")
 flags.DEFINE_string("data_dir1", "data/squad", "Data dir [data/squad]")# 数据路径
 flags.DEFINE_string("data_dir2", "data/squad", "Data dir [data/squad]")
+flags.DEFINE_string("data_pos_dir1", "data/squad_pos", "Data dir [data/squad]")# 数据路径
+flags.DEFINE_string("data_pos_dir2", "data/squad_pos", "Data dir [data/squad]")
 flags.DEFINE_string("run_id", "0", "Run ID [0]")
 flags.DEFINE_string("out_base_dir", "out", "out base dir [out]")
 flags.DEFINE_string("forward_name", "single", "Forward name [single]")
@@ -20,6 +22,8 @@ flags.DEFINE_string("answer_path", "", "Answer path []")# 设置答案的路径
 flags.DEFINE_string("eval_path", "", "Eval path []")    # 设置评价脚本的路径
 flags.DEFINE_string("load_path", "", "Load path []")    # 设置加载的模型路径
 flags.DEFINE_string("shared_path", "", "Shared path []")
+flags.DEFINE_boolean("use_pos", False, "use part-of-speech ? [False]")
+
 
 # Device placement
 flags.DEFINE_string("device", "/cpu:0", "default device for summing gradients. [/cpu:0]")

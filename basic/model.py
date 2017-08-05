@@ -268,6 +268,9 @@ class Model(object):
         self.na = tf.placeholder('bool', [N], name='na')
         self.model_id = tf.placeholder('float', [], name='model_id')
         self.model_id_value = 1
+        if self.config.use_pos:
+            self.x_pos = tf.placeholder('int32',[N,None,None,self.config.pos_dim])
+            self.q_pos = tf.placeholder('int32',[N,None,self.config.pos_dim])
 
         # Define misc
         self.tensor_dict = {}
@@ -307,6 +310,10 @@ class Model(object):
 
         # embedding
         xx, qq = embedding(config, "embedding_1",self.cx, self.cq, self.x, self.q, self.new_emb_mat, self.is_train)
+
+        if self.config.use_pos:
+            xx = tf.concat([xx,self.x_pos],axis=3)
+            qq = tf.concat([q,self.q_pos],axis=2)
 
         # highway network
         xx, qq = highway_layer(config, "highway_1", xx, qq, self.is_train)
@@ -481,6 +488,9 @@ class Model(object):
         q = np.zeros([N, JQ], dtype='int32')
         cq = np.zeros([N, JQ, W], dtype='int32')
         q_mask = np.zeros([N, JQ], dtype='bool')
+        if config.use_pos:
+            x_pos = np.zeros([N, M, JX,self.config.pos_dim], dtype='int32')
+            q_pos = np.zeros([N, JQ,self.config.pos_dim], dtype='int32')
 
         feed_dict[self.x] = x
         feed_dict[self.x_mask] = x_mask
@@ -492,6 +502,10 @@ class Model(object):
         feed_dict[self.model_id] = self.model_id_value
         if config.use_glove_for_unk:
             feed_dict[self.new_emb_mat] = batch.shared['new_emb_mat']
+
+        if config.use_pos:
+            feed_dict[self.x_pos] = x_pos
+            feed_dict[self.q_pos] = q_pos
 
         X = batch.data['x']
         CX = batch.data['cx']
