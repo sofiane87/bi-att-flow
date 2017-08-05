@@ -16,7 +16,7 @@ def main():
 
 def get_args():
     parser = argparse.ArgumentParser()
-    home = os.path.expanduser("~/Code/bi-att-flow")
+    home = os.path.expanduser("~/bi-att-flow")
     source_dir = os.path.join(home, "data", "squad")
     target_dir = "data/squad_pos"
     parser.add_argument('-s', "--source_dir", default=source_dir)
