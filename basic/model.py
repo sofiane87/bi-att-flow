@@ -269,8 +269,8 @@ class Model(object):
         self.model_id = tf.placeholder('float', [], name='model_id')
         self.model_id_value = 1
         if self.config.use_pos:
-            self.x_pos = tf.placeholder('int32',[N,None,None,self.config.pos_dim])
-            self.q_pos = tf.placeholder('int32',[N,None,self.config.pos_dim])
+            self.x_pos = tf.placeholder('float32',[N,None,None,self.config.pos_dim])
+            self.q_pos = tf.placeholder('float32',[N,None,self.config.pos_dim])
 
         # Define misc
         self.tensor_dict = {}
