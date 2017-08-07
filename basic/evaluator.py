@@ -7,7 +7,6 @@ from my.tensorflow import padded_reshape
 from my.utils import argmax
 from squad.utils import get_phrase, get_best_span, get_best_span_wy, get_best_span_topk
 
-from __future__ import print_function
 from collections import Counter
 import string
 import re
