@@ -151,7 +151,6 @@ def _train(config):
     if not(os.path.exists(save_path)):
         os.makedirs(save_path)
 
-    if os.path.exists()
     loss_file = open(save_path + dataset_name + suffix +'_loss.txt' ,'w')
     train_file = open(save_path +  dataset_name + suffix +'_train.txt' ,'w')
     dev_file = open(save_path +  dataset_name + suffix + '_dev.txt','w')
