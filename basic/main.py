@@ -142,16 +142,22 @@ def _train(config):
 
     suffix = ''
 
-    dataset_name = config.dataset_name
+    dataset_name = config.dataset_name 
 
     if config.use_pos:
         suffix = '_pos'
-    loss_file = open(config.log_dir + dataset_name + suffix +'_loss.txt' ,'w')
-    train_file = open(config.log_dir + dataset_name + suffix +'_train.txt' ,'w')
-    dev_file = open(config.log_dir + dataset_name + suffix + '_dev.txt','w')
-    numpy_loss_file = config.log_dir + dataset_name + suffix +'_loss'
-    numpy_train_file_path = config.log_dir + dataset_name + suffix +'_train'
-    numpy_dev_file_path = config.log_dir + dataset_name + suffix + '_dev'
+
+    save_path = config.log_dir + os.path.sep + dataset_name + os.path.sep
+    if not(os.path.exists(save_path)):
+        os.makedirs(save_path)
+
+    if os.path.exists()
+    loss_file = open(save_path + dataset_name + suffix +'_loss.txt' ,'w')
+    train_file = open(save_path +  dataset_name + suffix +'_train.txt' ,'w')
+    dev_file = open(save_path +  dataset_name + suffix + '_dev.txt','w')
+    numpy_loss_file = save_path +  dataset_name + suffix +'_loss'
+    numpy_train_file_path = save_path + dataset_name + suffix +'_train'
+    numpy_dev_file_path = save_path + dataset_name + suffix + '_dev'
 
     losses = []
     train_f1_scores = []
