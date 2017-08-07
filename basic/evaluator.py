@@ -66,20 +66,25 @@ class LabeledEvaluation(Evaluation):
 
 
 class AccuracyEvaluation(LabeledEvaluation):
-    def __init__(self, data_type, global_step, idxs, yp, y, correct, loss, tensor_dict=None):
+    def __init__(self, data_type, global_step, idxs, yp, y, correct, correct_squad, loss, tensor_dict=None):
         super(AccuracyEvaluation, self).__init__(data_type, global_step, idxs, yp, y, tensor_dict=tensor_dict)
         self.loss = loss
         self.correct = correct
+        self.correct_squad = correct_squad
         self.acc = sum(correct) / len(correct)
+        self.acc_squad =  sum(correct_squad) / len(correct_squad)
         self.dict['loss'] = loss
         self.dict['correct'] = correct
         self.dict['acc'] = self.acc
+        self.dict['correct_squad'] = correct_squad
+        self.dict['acc_squad'] = self.acc_squad
         loss_summary = tf.Summary(value=[tf.Summary.Value(tag='{}/loss'.format(data_type), simple_value=self.loss)])
         acc_summary = tf.Summary(value=[tf.Summary.Value(tag='{}/acc'.format(data_type), simple_value=self.acc)])
-        self.summaries = [loss_summary, acc_summary]
+        acc_squad_summary = tf.Summary(value=[tf.Summary.Value(tag='{}/acc_squad'.format(data_type), simple_value=self.acc_squad)])
+        self.summaries = [loss_summary, acc_summary,acc_squad_summary]
 
     def __repr__(self):
-        return "{} step {}: accuracy={}, loss={}".format(self.data_type, self.global_step, self.acc, self.loss)
+        return "{} step {}:loss={}\texact={}\texact_squad={}".format(self.data_type, self.global_step,self.loss, self.acc,self.acc_squad )
 
     def __add__(self, other):
         if other == 0:
@@ -200,17 +205,22 @@ class ForwardEvaluation(Evaluation):
 
 
 class F1Evaluation(AccuracyEvaluation):
-    def __init__(self, data_type, global_step, idxs, yp, yp2, y, correct, loss, f1s, id2answer_dict, tensor_dict=None):
-        super(F1Evaluation, self).__init__(data_type, global_step, idxs, yp, y, correct, loss, tensor_dict=tensor_dict)
+    def __init__(self, data_type, global_step, idxs, yp, yp2, y, correct, loss, f1s, id2answer_dict, f1s_squad, correct_squad, tensor_dict=None):
+        super(F1Evaluation, self).__init__(data_type, global_step, idxs, yp, y, correct, correct_squad, loss, tensor_dict=tensor_dict)
         self.yp2 = yp2
         self.f1s = f1s
+        self.f1s_squad = f1s_squad
+        self.f1_squad = float(np.mean(f1s_squad))
         self.f1 = float(np.mean(f1s))
         self.dict['yp2'] = yp2
         self.dict['f1s'] = f1s
         self.dict['f1'] = self.f1
+        self.dict['f1_squad'] = self.f1_squad
         self.id2answer_dict = id2answer_dict
         f1_summary = tf.Summary(value=[tf.Summary.Value(tag='{}/f1'.format(data_type), simple_value=self.f1)])
+        f1_squad_summary = tf.Summary(value=[tf.Summary.Value(tag='{}/f1_squad'.format(data_type), simple_value=self.f1_squad)])
         self.summaries.append(f1_summary)
+        self.summaries.append(f1_squad_summary)
 
     def __add__(self, other):
         if other == 0:
@@ -222,7 +232,9 @@ class F1Evaluation(AccuracyEvaluation):
         new_yp2 = self.yp2 + other.yp2
         new_y = self.y + other.y
         new_correct = self.correct + other.correct
+        new_correct_squad = self.correct_squad + other.correct_squad
         new_f1s = self.f1s + other.f1s
+        new_f1s_squad = self.f1s_squad + other.f1s_squad
         new_loss = (self.loss * self.num_examples + other.loss * other.num_examples) / len(new_correct)
         new_id2answer_dict = dict(list(self.id2answer_dict.items()) + list(other.id2answer_dict.items()))
         new_id2score_dict = dict(list(self.id2answer_dict['scores'].items()) + list(other.id2answer_dict['scores'].items()))
@@ -230,14 +242,14 @@ class F1Evaluation(AccuracyEvaluation):
         if 'na' in self.id2answer_dict:
             new_id2na_dict = dict(list(self.id2answer_dict['na'].items()) + list(other.id2answer_dict['na'].items()))
             new_id2answer_dict['na'] = new_id2na_dict
-        e = F1Evaluation(self.data_type, self.global_step, new_idxs, new_yp, new_yp2, new_y, new_correct, new_loss, new_f1s, new_id2answer_dict)
+        e = F1Evaluation(self.data_type, self.global_step, new_idxs, new_yp, new_yp2, new_y, new_correct, new_loss, new_f1s, new_id2answer_dict, new_f1s_squad, new_correct_squad)
         if 'wyp' in self.dict:
             new_wyp = self.dict['wyp'] + other.dict['wyp']
             e.dict['wyp'] = new_wyp
         return e
 
     def __repr__(self):
-        return "{} step {}: accuracy={:.4f}, f1={:.4f}, loss={:.4f}".format(self.data_type, self.global_step, self.acc, self.f1, self.loss)
+        return "{} step {}: accuracy={:.4f}\t accuracy_squad={:.4f}\tf1={:.4f}\tf1_squad={:.4f}\t\tloss={:.4f}".format(self.data_type, self.global_step, self.acc,self.acc_squad, self.f1,self.f1_squad, self.loss)
 
 
 class F1Evaluator(LabeledEvaluator):
@@ -330,13 +342,16 @@ class F1Evaluator(LabeledEvaluator):
         if self.config.topk == 0:
             correct = [self.__class__.compare2(yi, span) for yi, span in zip(y, spans)]
             f1s = [self.__class__.span_f1(yi, span) for yi, span in zip(y, spans)]
+            f1s_squad, correct_squad = zip(*[self.__class__.span_squad(yi, span,context,xi) for yi, span, xi, context in zip(y, spans,data_set.data['x'], data_set.data['p'])])
         else:
             correct = [self.__class__.compare2(yi, span[0]) for yi, span in zip(y, spans)]
             f1s = [self.__class__.span_f1(yi, span[0]) for yi, span in zip(y, spans)]
+            f1s_squad, correct_squad = zip(*[self.__class__.span_squad(yi, span[0],context,xi) for yi, span, xi, context in zip(y, spans,data_set.data['x'], data_set.data['p'])])
+
         
         tensor_dict = dict(zip(self.tensor_dict.keys(), vals))
         e = F1Evaluation(data_set.data_type, int(global_step), idxs, yp.tolist(), yp2.tolist(), y,
-                         correct, float(loss), f1s, id2answer_dict, tensor_dict=tensor_dict)
+                         correct, float(loss), f1s, id2answer_dict, f1s_squad, correct_squad, tensor_dict=tensor_dict)
         if self.config.wy:
             e.dict['wyp'] = wyp.tolist()
         return e
@@ -374,6 +389,56 @@ class F1Evaluator(LabeledEvaluator):
                 f1 = span_f1(true_span, pred_span)
                 max_f1 = max(f1, max_f1)
         return max_f1
+   
+    @staticmethod
+    def span_squad(yi,span,context,xi):
+        max_f1 = 0
+        max_exact = 0
+        for start, stop in yi:
+            ground_truth = get_phrase(context, xi, (start,stop))
+            prediction = get_phrase(context, xi, span)
+            max_f1 = max(max_f1, f1_score(prediction,ground_truth))
+            max_exact = max(max_exact, exact_match_score(prediction,ground_truth))
+        return max_f1, max_exact
+
+    @staticmethod
+    def normalize_answer(s):
+        """Lower text and remove punctuation, articles and extra whitespace."""
+        
+        def remove_articles(text):
+            return re.sub(r'\b(a|an|the)\b', ' ', text)
+
+        def white_space_fix(text):
+            return ' '.join(text.split())
+
+        def remove_punc(text):
+            exclude = set(string.punctuation)
+            return ''.join(ch for ch in text if ch not in exclude)
+
+        def lower(text):
+            return text.lower()
+
+
+        return white_space_fix(remove_articles(remove_punc(lower(s))))
+
+    @staticmethod
+
+    def f1_score(prediction, ground_truth):
+        prediction_tokens = normalize_answer(prediction).split()
+        ground_truth_tokens = normalize_answer(ground_truth).split()
+        common = Counter(prediction_tokens) & Counter(ground_truth_tokens)
+        num_same = sum(common.values())
+        if num_same == 0:
+            return 0
+        precision = 1.0 * num_same / len(prediction_tokens)
+        recall = 1.0 * num_same / len(ground_truth_tokens)
+        f1 = (2 * precision * recall) / (precision + recall)
+        return f1
+
+    @staticmethod
+
+    def exact_match_score(prediction, ground_truth):
+        return (normalize_answer(prediction) == normalize_answer(ground_truth))
 
 
 class MultiGPUF1Evaluator(F1Evaluator):
