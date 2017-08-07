@@ -142,10 +142,8 @@ def _train(config):
 
     suffix = ''
 
-    dataset_name = 'squad'
-    if 'dataset_name' in config.keys():
-        dataset_name = config.dataset_name
-        
+    dataset_name = config.dataset_name
+
     if config.use_pos:
         suffix = '_pos'
     loss_file = open(config.log_dir + dataset_name + suffix +'_loss.txt' ,'w')

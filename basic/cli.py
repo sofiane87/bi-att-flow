@@ -23,6 +23,7 @@ flags.DEFINE_string("eval_path", "", "Eval path []")    # 设置评价脚本的�
 flags.DEFINE_string("load_path", "", "Load path []")    # 设置加载的模型路径
 flags.DEFINE_string("shared_path", "", "Shared path []")
 flags.DEFINE_boolean("use_pos", False, "use part-of-speech ? [False]")
+flags.DEFINE_string("dataset_name", "squad", "name of the dataset name")
 
 
 # Device placement
