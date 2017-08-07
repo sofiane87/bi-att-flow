@@ -7,6 +7,14 @@ from my.tensorflow import padded_reshape
 from my.utils import argmax
 from squad.utils import get_phrase, get_best_span, get_best_span_wy, get_best_span_topk
 
+from __future__ import print_function
+from collections import Counter
+import string
+import re
+import argparse
+import json
+import sys
+
 
 class Evaluation(object):
     def __init__(self, data_type, global_step, idxs, yp, tensor_dict=None):
@@ -397,8 +405,8 @@ class F1Evaluator(LabeledEvaluator):
         for start, stop in yi:
             ground_truth = get_phrase(context, xi, (start,stop))
             prediction = get_phrase(context, xi, span)
-            max_f1 = max(max_f1, f1_score(prediction,ground_truth))
-            max_exact = max(max_exact, exact_match_score(prediction,ground_truth))
+            max_f1 = max(max_f1, F1Evaluator.f1_score(prediction,ground_truth))
+            max_exact = max(max_exact, F1Evaluator.exact_match_score(prediction,ground_truth))
         return max_f1, max_exact
 
     @staticmethod
@@ -424,8 +432,8 @@ class F1Evaluator(LabeledEvaluator):
     @staticmethod
 
     def f1_score(prediction, ground_truth):
-        prediction_tokens = normalize_answer(prediction).split()
-        ground_truth_tokens = normalize_answer(ground_truth).split()
+        prediction_tokens = F1Evaluator.normalize_answer(prediction).split()
+        ground_truth_tokens = F1Evaluator.normalize_answer(ground_truth).split()
         common = Counter(prediction_tokens) & Counter(ground_truth_tokens)
         num_same = sum(common.values())
         if num_same == 0:
@@ -438,7 +446,7 @@ class F1Evaluator(LabeledEvaluator):
     @staticmethod
 
     def exact_match_score(prediction, ground_truth):
-        return (normalize_answer(prediction) == normalize_answer(ground_truth))
+        return (F1Evaluator.normalize_answer(prediction) == F1Evaluator.normalize_answer(ground_truth))
 
 
 class MultiGPUF1Evaluator(F1Evaluator):
