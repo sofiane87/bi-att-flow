@@ -141,14 +141,19 @@ def _train(config):
     global_step = 0
 
     suffix = ''
+
+    dataset_name = 'squad'
+    if 'dataset_name' in config.keys():
+        dataset_name = config.dataset_name
+        
     if config.use_pos:
         suffix = '_pos'
-    loss_file = open(config.log_dir + config.get('data_set', 'squad') + suffix +'_loss.txt' ,'w')
-    train_file = open(config.log_dir + config.get('data_set', 'squad') + suffix +'_train.txt' ,'w')
-    dev_file = open(config.log_dir + config.get('data_set', 'squad') + suffix + '_dev.txt','w')
-    numpy_loss_file = config.log_dir + config.get('data_set', 'squad') + suffix +'_loss'
-    numpy_train_file_path = config.log_dir + config.get('data_set', 'squad') + suffix +'_train'
-    numpy_dev_file_path = config.log_dir + config.get('data_set', 'squad') + suffix + '_dev'
+    loss_file = open(config.log_dir + dataset_name + suffix +'_loss.txt' ,'w')
+    train_file = open(config.log_dir + dataset_name + suffix +'_train.txt' ,'w')
+    dev_file = open(config.log_dir + dataset_name + suffix + '_dev.txt','w')
+    numpy_loss_file = config.log_dir + dataset_name + suffix +'_loss'
+    numpy_train_file_path = config.log_dir + dataset_name + suffix +'_train'
+    numpy_dev_file_path = config.log_dir + dataset_name + suffix + '_dev'
 
     losses = []
     train_f1_scores = []
