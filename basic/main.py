@@ -143,7 +143,7 @@ def _train(config):
     suffix = ''
     if config.use_pos:
         suffix = '_pos'
-    loss_file = open(config.log_dir + config.get('data_set', 'squad') + suffix +'_loss.txt' ,'w'))
+    loss_file = open(config.log_dir + config.get('data_set', 'squad') + suffix +'_loss.txt' ,'w')
     train_file = open(config.log_dir + config.get('data_set', 'squad') + suffix +'_train.txt' ,'w')
     dev_file = open(config.log_dir + config.get('data_set', 'squad') + suffix + '_dev.txt','w')
     numpy_loss_file = config.log_dir + config.get('data_set', 'squad') + suffix +'_loss'
