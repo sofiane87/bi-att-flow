@@ -76,8 +76,8 @@ flags.DEFINE_bool("cpu_opt", False, "CPU optimization? GPU computation can be sl
 # Logging and saving options
 flags.DEFINE_boolean("progress", True, "Show progress? [True]")
 flags.DEFINE_integer("log_period", 100, "Log period [100]")
-flags.DEFINE_integer("eval_period", 500, "Eval period [500]")
-flags.DEFINE_integer("save_period", 500, "Save Period [500]")
+flags.DEFINE_integer("eval_period", 200, "Eval period [200]")
+flags.DEFINE_integer("save_period", 200, "Save Period [200]")
 flags.DEFINE_integer("max_to_keep", 20, "Max recent saves to keep [20]")
 flags.DEFINE_bool("dump_eval", True, "dump eval? [True]")
 flags.DEFINE_bool("dump_answer", True, "dump answer? [True]")
@@ -117,8 +117,11 @@ flags.DEFINE_bool("train_cross", False, "keep separated models or train cross st
 def main(_):
     config = flags.FLAGS
 
+    suffix = ''
+    if config.use_pos
+    	suffix = '_pos'
     # change out dir
-    config.out_dir = os.path.join(config.out_base_dir, config.model_name, str(config.run_id).zfill(2)  )
+    config.out_dir = os.path.join(config.out_base_dir, config.model_name + suffix, str(config.run_id).zfill(2)  )
     
     # EQnA
     # config.out_dir = os.path.join(config.out_base_dir, config.model_name, str(config.run_id).zfill(2) + '_EQnA' )
