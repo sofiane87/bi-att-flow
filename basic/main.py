@@ -151,9 +151,19 @@ def _train(config):
     if not(os.path.exists(save_path)):
         os.makedirs(save_path)
 
-    loss_file = open(save_path + dataset_name + suffix +'_loss.txt' ,'w')
-    train_file = open(save_path +  dataset_name + suffix +'_train.txt' ,'w')
-    dev_file = open(save_path +  dataset_name + suffix + '_dev.txt','w')
+    loss_file = save_path + dataset_name + suffix +'_loss.txt'
+    train_file = save_path +  dataset_name + suffix +'_train.txt'
+    dev_file = save_path +  dataset_name + suffix + '_dev.txt'
+    with open(loss_file, 'w') as f:
+        f.write('\t\t\t-Losses-\t\t\t')
+
+    with open(train_file, 'w') as f:
+        f.write('\t\t\t-train scores-\t\t\t')
+
+
+    with open(dev_file, 'w') as f:
+        f.write('\t\t\t-dev scores-\t\t\t')
+
     numpy_loss_file = save_path +  dataset_name + suffix +'_loss'
     numpy_train_file_path = save_path + dataset_name + suffix +'_train'
     numpy_dev_file_path = save_path + dataset_name + suffix + '_dev'
@@ -170,7 +180,9 @@ def _train(config):
         global_step = sess.run(model.global_step) + 1  # +1 because all calculations are done after step
         get_summary = global_step % config.log_period == 0
         loss, summary, train_op = trainer.step(sess, batches, get_summary=get_summary)
-        loss_file.write('step : {}\tloss : {}\n'.format(global_step,loss))
+        with open(loss_file, 'a') as f:
+            f.write('step : {}\tloss : {}\n'.format(global_step,loss))
+
         losses.append(loss)
 
         if get_summary:
@@ -196,11 +208,15 @@ def _train(config):
                 sess, tqdm(dev_data.get_multi_batches(config.batch_size, config.num_gpus, num_steps=num_steps), total=num_steps))
             graph_handler.add_summaries(e_dev.summaries, global_step)
 
-            train_file.write(e_train.__repr__() + '\n')
+            with open(train_file, 'a') as f:
+                f.write(e_train.__repr__() + '\n')
+
             train_f1_scores.append([e_train.f1,e_train.f1_squad])
             train_exact_scores.append([e_train.acc,e_train.acc_squad])
 
-            dev_file.write(e_dev.__repr__() + '\n')
+            with open(dev_file, 'a') as f:
+                f.write(e_dev.__repr__() + '\n')
+
             dev_f1_scores.append([e_dev.f1,e_dev.f1_squad])
             dev_exact_scores.append([e_dev.acc,e_dev.acc_squad])
 
@@ -222,15 +238,18 @@ def _train(config):
                 sess, tqdm(dev_data.get_multi_batches(config.batch_size, config.num_gpus, num_steps=num_steps), total=num_steps))
             graph_handler.add_summaries(e_dev.summaries, global_step)
 
-            
-            train_file.write(e_train.__repr__() + '\n')
+            with open(train_file, 'a') as f:
+                f.write(e_train.__repr__() + '\n')
+
             train_f1_scores.append([e_train.f1,e_train.f1_squad])
             train_exact_scores.append([e_train.acc,e_train.acc_squad])
 
-            dev_file.write(e_dev.__repr__() + '\n')
+            with open(dev_file, 'a') as f:
+                f.write(e_dev.__repr__() + '\n')
+
             dev_f1_scores.append([e_dev.f1,e_dev.f1_squad])
             dev_exact_scores.append([e_dev.acc,e_dev.acc_squad])
-
+            
             print("\n&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
             print(e_train)
             print(e_dev)
