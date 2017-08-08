@@ -118,7 +118,7 @@ def main(_):
     config = flags.FLAGS
 
     suffix = ''
-    if config.use_pos
+    if config.use_pos:
     	suffix = '_pos'
     # change out dir
     config.out_dir = os.path.join(config.out_base_dir, config.model_name + suffix, str(config.run_id).zfill(2)  )
