@@ -155,14 +155,14 @@ def _train(config):
     train_file = save_path +  dataset_name + suffix +'_train.txt'
     dev_file = save_path +  dataset_name + suffix + '_dev.txt'
     with open(loss_file, 'w') as f:
-        f.write('\t\t\t-Losses-\t\t\t')
+        f.write('\t\t\t-Losses-\t\t\t\n')
 
     with open(train_file, 'w') as f:
-        f.write('\t\t\t-train scores-\t\t\t')
+        f.write('\t\t\t-train scores-\t\t\t\n')
 
 
     with open(dev_file, 'w') as f:
-        f.write('\t\t\t-dev scores-\t\t\t')
+        f.write('\t\t\t-dev scores-\t\t\t\n')
 
     numpy_loss_file = save_path +  dataset_name + suffix +'_loss'
     numpy_train_file_path = save_path + dataset_name + suffix +'_train'
@@ -249,7 +249,7 @@ def _train(config):
 
             dev_f1_scores.append([e_dev.f1,e_dev.f1_squad])
             dev_exact_scores.append([e_dev.acc,e_dev.acc_squad])
-            
+
             print("\n&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
             print(e_train)
             print(e_dev)
