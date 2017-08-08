@@ -1,3 +1,5 @@
 			-dev scores-			
 dev step 200: accuracy=0.0635	 accuracy_squad=0.0652	f1=0.1202	f1_squad=0.1407		loss=7.4734
 dev step 200: accuracy=0.0018	 accuracy_squad=0.0022	f1=0.0531	f1_squad=0.0795		loss=9.7053
+dev step 400: accuracy=0.1628	 accuracy_squad=0.1695	f1=0.2290	f1_squad=0.2557		loss=6.4136
+dev step 400: accuracy=0.0033	 accuracy_squad=0.0047	f1=0.0602	f1_squad=0.0782		loss=9.5896

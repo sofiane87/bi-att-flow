@@ -1,3 +1,5 @@
 			-train scores-			
 train step 200: accuracy=0.0577	 accuracy_squad=0.0615	f1=0.1140	f1_squad=0.1321		loss=7.1523
 train step 200: accuracy=0.0013	 accuracy_squad=0.0030	f1=0.0415	f1_squad=0.0628		loss=9.7318
+train step 400: accuracy=0.1477	 accuracy_squad=0.1627	f1=0.2205	f1_squad=0.2465		loss=5.9453
+train step 400: accuracy=0.0012	 accuracy_squad=0.0027	f1=0.0462	f1_squad=0.0613		loss=9.6270
