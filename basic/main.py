@@ -260,7 +260,7 @@ def _train(config):
             if config.dump_answer:
                 graph_handler.dump_answer(e_dev)
     
-        if global_step % config.save_period != 0:
+        if global_step % config.save_period == 0:
             graph_handler.save(sess, global_step=global_step)
 
     loss_file.close()
