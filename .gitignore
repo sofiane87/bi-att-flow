@@ -1,5 +1,5 @@
 out/*.json
-out/*/save/*
+out/*/save/
 venv/
 .vscode/
 data/
