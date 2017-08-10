@@ -11,3 +11,12 @@ train step 5000: accuracy=0.5918	 accuracy_squad=0.6618	f1=0.7439	f1_squad=0.785
 train step 5000: accuracy=0.0002	 accuracy_squad=0.0028	f1=0.0066	f1_squad=0.0085		loss=11.1376
 train step 6000: accuracy=0.6128	 accuracy_squad=0.6808	f1=0.7661	f1_squad=0.8046		loss=1.9648
 train step 6000: accuracy=0.0003	 accuracy_squad=0.0075	f1=0.0115	f1_squad=0.0196		loss=12.9423
+train step 7000: accuracy=0.6250	 accuracy_squad=0.6927	f1=0.7749	f1_squad=0.8121		loss=1.8752
+train step 7000: accuracy=0.0005	 accuracy_squad=0.0032	f1=0.0056	f1_squad=0.0071		loss=12.3588
+train step 8000: accuracy=0.6442	 accuracy_squad=0.7132	f1=0.7959	f1_squad=0.8329		loss=1.7139
+train step 8000: accuracy=0.0005	 accuracy_squad=0.0037	f1=0.0091	f1_squad=0.0120		loss=10.9120
+train step 9000: accuracy=0.6623	 accuracy_squad=0.7302	f1=0.8066	f1_squad=0.8444		loss=1.6351
+train step 9000: accuracy=0.0003	 accuracy_squad=0.0050	f1=0.0109	f1_squad=0.0177		loss=12.4298
+train step 10000: accuracy=0.6768	 accuracy_squad=0.7488	f1=0.8271	f1_squad=0.8614		loss=1.5228
+train step 10000: accuracy=0.0002	 accuracy_squad=0.0030	f1=0.0080	f1_squad=0.0103		loss=11.8913
+train step 11000: accuracy=0.6208	 accuracy_squad=0.6907	f1=0.7715	f1_squad=0.8090		loss=1.8875
