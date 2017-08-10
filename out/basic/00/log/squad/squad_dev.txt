@@ -5,3 +5,9 @@ dev step 2000: accuracy=0.5540	 accuracy_squad=0.5790	f1=0.6698	f1_squad=0.6881	
 dev step 2000: accuracy=0.0017	 accuracy_squad=0.0123	f1=0.0289	f1_squad=0.0415		loss=10.0335
 dev step 3000: accuracy=0.5782	 accuracy_squad=0.6088	f1=0.7037	f1_squad=0.7208		loss=3.1133
 dev step 3000: accuracy=0.0013	 accuracy_squad=0.0123	f1=0.0220	f1_squad=0.0340		loss=10.5974
+dev step 4000: accuracy=0.6103	 accuracy_squad=0.6362	f1=0.7179	f1_squad=0.7346		loss=2.9988
+dev step 4000: accuracy=0.0008	 accuracy_squad=0.0102	f1=0.0174	f1_squad=0.0264		loss=10.7114
+dev step 5000: accuracy=0.6268	 accuracy_squad=0.6545	f1=0.7311	f1_squad=0.7475		loss=2.9600
+dev step 5000: accuracy=0.0005	 accuracy_squad=0.0052	f1=0.0103	f1_squad=0.0127		loss=11.0594
+dev step 6000: accuracy=0.6185	 accuracy_squad=0.6492	f1=0.7352	f1_squad=0.7519		loss=2.8180
+dev step 6000: accuracy=0.0015	 accuracy_squad=0.0098	f1=0.0178	f1_squad=0.0257		loss=12.8203
