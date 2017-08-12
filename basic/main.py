@@ -263,14 +263,12 @@ def _train(config):
         if global_step % config.save_period == 0:
             graph_handler.save(sess, global_step=global_step)
 
-    loss_file.close()
+    
     np.save(numpy_loss_file,losses)
 
-    train_file.close()
     np.save(numpy_train_file_path + '_f1',train_f1_scores)
     np.save(numpy_train_file_path + '_exact',train_exact_scores)    
 
-    dev_file.close()
     np.save(numpy_dev_file_path + '_f1',dev_f1_scores)
     np.save(numpy_dev_file_path + '_exact',dev_exact_scores)
 
