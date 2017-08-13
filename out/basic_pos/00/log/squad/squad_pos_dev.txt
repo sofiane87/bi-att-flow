@@ -11,3 +11,4 @@ dev step 5000: accuracy=0.6237	 accuracy_squad=0.6538	f1=0.7369	f1_squad=0.7538	
 dev step 5000: accuracy=0.0008	 accuracy_squad=0.0047	f1=0.0140	f1_squad=0.0148		loss=10.9122
 dev step 6000: accuracy=0.6342	 accuracy_squad=0.6668	f1=0.7474	f1_squad=0.7633		loss=2.8596
 dev step 6000: accuracy=0.0003	 accuracy_squad=0.0017	f1=0.0101	f1_squad=0.0081		loss=11.5994
+dev step 7000: accuracy=0.6385	 accuracy_squad=0.6663	f1=0.7441	f1_squad=0.7613		loss=2.8512
