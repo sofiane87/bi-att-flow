@@ -35,3 +35,7 @@ dev step 17000: accuracy=0.5798	 accuracy_squad=0.6112	f1=0.6959	f1_squad=0.7134
 dev step 17000: accuracy=0.6567	 accuracy_squad=0.6848	f1=0.7618	f1_squad=0.7777		loss=2.8423
 dev step 18000: accuracy=0.5737	 accuracy_squad=0.6057	f1=0.6950	f1_squad=0.7132		loss=3.5503
 dev step 18000: accuracy=0.6467	 accuracy_squad=0.6768	f1=0.7595	f1_squad=0.7753		loss=2.8826
+dev step 19000: accuracy=0.5730	 accuracy_squad=0.6095	f1=0.6941	f1_squad=0.7137		loss=3.6717
+dev step 19000: accuracy=0.6477	 accuracy_squad=0.6832	f1=0.7619	f1_squad=0.7783		loss=3.0273
+dev step 20000: accuracy=0.5665	 accuracy_squad=0.6000	f1=0.6851	f1_squad=0.7048		loss=3.7771
+dev step 20000: accuracy=0.6435	 accuracy_squad=0.6775	f1=0.7584	f1_squad=0.7741		loss=3.0193
