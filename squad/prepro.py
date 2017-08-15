@@ -9,7 +9,7 @@ from collections import Counter
 from tqdm import tqdm
 
 from squad.utils import get_word_span, get_word_idx, process_tokens
-
+import platform
 
 def main():
     args = get_args()
@@ -19,9 +19,13 @@ def main():
 def get_args():
     parser = argparse.ArgumentParser()
     home = os.path.expanduser("~/bi-att-flow")
+    if 'sofiane' in platform.node().lower():
+        home = os.path.expanduser("~/Code/bi-att-flow")
+        
+
     source_dir = os.path.join(home, "data", "squad")
     target_dir = "data/squad"
-    glove_dir = os.path.join(home, "data", "glove")
+    glove_dir = os.path.join(home, "data", "GloVe")
     parser.add_argument('-s', "--source_dir", default=source_dir)
     parser.add_argument('-t', "--target_dir", default=target_dir)
     parser.add_argument("--train_name", default='train-v1.1.json')
@@ -61,7 +65,11 @@ def prepro(args):
     if args.mode == 'full':
         prepro_each(args, 'train', out_name='train')
         prepro_each(args, 'dev', out_name='dev')
-        prepro_each(args, 'dev', out_name='test')
+        if 'squad' in args.source_dir.lower():
+            prepro_each(args, 'dev', out_name='test')
+        else:
+            prepro_each(args, 'test', out_name='test')
+
     elif args.mode == 'all':
         create_all(args)
         prepro_each(args, 'dev', 0.0, 0.0, out_name='dev')
@@ -123,7 +131,10 @@ def prepro_each(args, data_type, start_ratio=0.0, stop_ratio=1.0, out_name="defa
     if not args.split:
         sent_tokenize = lambda para: [para]
 
-    source_path = in_path or os.path.join(args.source_dir, "{}-{}v1.1.json".format(data_type, args.suffix))
+    if 'squad' in args.source_dir.lower():
+        source_path = in_path or os.path.join(args.source_dir, "{}-{}v1.1.json".format(data_type, args.suffix))
+    else:
+        source_path = in_path or os.path.join(args.source_dir, "{}.json".format(data_type))
     source_data = json.load(open(source_path, 'r'))
 
     q, cq, y, rx, rcx, ids, idxs = [], [], [], [], [], [], []

@@ -8,6 +8,7 @@ from tqdm import tqdm
 
 from squad.utils import process_tokens
 
+import platform
 
 def main():
     args = get_args()
@@ -17,6 +18,9 @@ def main():
 def get_args():
     parser = argparse.ArgumentParser()
     home = os.path.expanduser("~/bi-att-flow")
+    if 'sofiane' in platform.node().lower():
+        home = os.path.expanduser("~/Code/bi-att-flow")
+        
     source_dir = os.path.join(home, "data", "squad")
     target_dir = "data/squad_pos"
     parser.add_argument('-s', "--source_dir", default=source_dir)
@@ -93,7 +97,11 @@ def prepro_each(args, data_type, start_ratio=0.0, stop_ratio=1.0, out_name="defa
     if not args.split:
         sent_tokenize = lambda para: [para]
 
-    source_path = in_path or os.path.join(args.source_dir, "{}-{}v1.1.json".format(data_type, args.suffix))
+    if 'squad' in args.source_dir.lower():
+        source_path = in_path or os.path.join(args.source_dir, "{}-{}v1.1.json".format(data_type, args.suffix))
+    else:
+        source_path = in_path or os.path.join(args.source_dir, "{}.json".format(data_type))
+
     source_data = json.load(open(source_path, 'r'))
 
     q  = []

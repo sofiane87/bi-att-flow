@@ -120,6 +120,13 @@ def main(_):
     suffix = ''
     if config.use_pos:
     	suffix = '_pos'
+
+    if config.dataset_name != 'squad':
+        config.data_dir1 = "data/{}".format(config.dataset_name)
+        config.data_dir2 = "data/{}".format(config.dataset_name)
+        config.data_pos_dir1 = "data/{}_pos".format(config.dataset_name)
+        config.data_pos_dir2 = "data/{}_pos".format(config.dataset_name)
+           
     # change out dir
     config.out_dir = os.path.join(config.out_base_dir, config.model_name + suffix, str(config.run_id).zfill(2)  )
     
