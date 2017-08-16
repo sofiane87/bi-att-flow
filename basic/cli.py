@@ -128,6 +128,8 @@ def main(_):
         config.data_pos_dir2 = "data/{}_pos".format(config.dataset_name)
            
     # change out dir
+    if  config.dataset_name != 'squad':
+        config.model_name = config.dataset_name
     config.out_dir = os.path.join(config.out_base_dir, config.model_name + suffix, str(config.run_id).zfill(2)  )
     
     # EQnA
