@@ -23,3 +23,5 @@ train step 11000: accuracy=0.8274	 accuracy_squad=0.8369	f1=0.8636	f1_squad=0.87
 train step 11000: accuracy=0.8345	 accuracy_squad=0.8488	f1=0.8872	f1_squad=0.8955		loss=1.7162
 train step 12000: accuracy=0.8369	 accuracy_squad=0.8405	f1=0.8665	f1_squad=0.8715		loss=1.3703
 train step 12000: accuracy=0.8381	 accuracy_squad=0.8452	f1=0.8725	f1_squad=0.8791		loss=1.3656
+train step 13000: accuracy=0.8238	 accuracy_squad=0.8274	f1=0.8581	f1_squad=0.8637		loss=1.3499
+train step 13000: accuracy=0.8810	 accuracy_squad=0.8821	f1=0.8977	f1_squad=0.9017		loss=1.1688
