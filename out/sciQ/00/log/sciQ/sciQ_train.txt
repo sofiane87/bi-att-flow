@@ -19,3 +19,5 @@ train step 9000: accuracy=0.8810	 accuracy_squad=0.8833	f1=0.9014	f1_squad=0.906
 train step 9000: accuracy=0.0000	 accuracy_squad=0.0071	f1=0.0158	f1_squad=0.0224		loss=10.3950
 train step 10000: accuracy=0.8952	 accuracy_squad=0.8952	f1=0.9089	f1_squad=0.9127		loss=1.0294
 train step 10000: accuracy=0.0202	 accuracy_squad=0.0238	f1=0.0727	f1_squad=0.0839		loss=11.0938
+train step 11000: accuracy=0.8274	 accuracy_squad=0.8369	f1=0.8636	f1_squad=0.8714		loss=1.3620
+train step 11000: accuracy=0.8345	 accuracy_squad=0.8488	f1=0.8872	f1_squad=0.8955		loss=1.7162
