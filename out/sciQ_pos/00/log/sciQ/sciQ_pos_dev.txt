@@ -1,0 +1,9 @@
+			-dev scores-			
+dev step 1000: accuracy=0.6522	 accuracy_squad=0.6683	f1=0.7638	f1_squad=0.7739		loss=3.2563
+dev step 1000: accuracy=0.0000	 accuracy_squad=0.0000	f1=0.0662	f1_squad=0.0805		loss=8.0345
+dev step 2000: accuracy=0.6820	 accuracy_squad=0.6957	f1=0.7669	f1_squad=0.7763		loss=3.0817
+dev step 2000: accuracy=0.0000	 accuracy_squad=0.0000	f1=0.0814	f1_squad=0.1032		loss=8.0533
+dev step 3000: accuracy=0.6460	 accuracy_squad=0.6795	f1=0.7562	f1_squad=0.7733		loss=3.1593
+dev step 3000: accuracy=0.0050	 accuracy_squad=0.0050	f1=0.0207	f1_squad=0.0246		loss=8.1331
+dev step 4000: accuracy=0.6298	 accuracy_squad=0.6571	f1=0.7385	f1_squad=0.7538		loss=3.6083
+dev step 4000: accuracy=0.0099	 accuracy_squad=0.0099	f1=0.0161	f1_squad=0.0165		loss=8.3953
