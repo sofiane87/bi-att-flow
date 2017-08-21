@@ -1,0 +1,2 @@
+model_checkpoint_path: "sciQ-2000"
+all_model_checkpoint_paths: "sciQ-2000"
