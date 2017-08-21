@@ -126,6 +126,7 @@ def main(_):
         config.data_dir2 = "data/{}".format(config.dataset_name)
         config.data_pos_dir1 = "data/{}_pos".format(config.dataset_name)
         config.data_pos_dir2 = "data/{}_pos".format(config.dataset_name)
+        config.eval_period = 150
            
     # change out dir
     if  config.dataset_name != 'squad':
@@ -133,6 +134,7 @@ def main(_):
     dim_text = ''
     if config.hidden_size != 100:
         dim_text = '_dim_{}'.format(config.hidden_size)
+    
     config.out_dir = os.path.join(config.out_base_dir, config.model_name + dim_text + suffix, str(config.run_id).zfill(2)  )
     
     # EQnA
