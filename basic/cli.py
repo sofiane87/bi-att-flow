@@ -130,7 +130,10 @@ def main(_):
     # change out dir
     if  config.dataset_name != 'squad':
         config.model_name = config.dataset_name
-    config.out_dir = os.path.join(config.out_base_dir, config.model_name + suffix, str(config.run_id).zfill(2)  )
+    dim_text = ''
+    if config.hidden_size != 100:
+        dim_text = '_dim_{}'.format(config.hidden_size)
+    config.out_dir = os.path.join(config.out_base_dir, config.model_name + dim_text + suffix, str(config.run_id).zfill(2)  )
     
     # EQnA
     # config.out_dir = os.path.join(config.out_base_dir, config.model_name, str(config.run_id).zfill(2) + '_EQnA' )
