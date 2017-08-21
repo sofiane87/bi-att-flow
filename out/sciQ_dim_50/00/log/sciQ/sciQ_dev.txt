@@ -1,0 +1,5 @@
+			-dev scores-			
+dev step 1000: accuracy=0.4957	 accuracy_squad=0.5093	f1=0.5807	f1_squad=0.5922		loss=4.0846
+dev step 1000: accuracy=0.0000	 accuracy_squad=0.0174	f1=0.0697	f1_squad=0.0956		loss=7.9967
+dev step 2000: accuracy=0.5565	 accuracy_squad=0.5727	f1=0.6460	f1_squad=0.6571		loss=3.7164
+dev step 2000: accuracy=0.0000	 accuracy_squad=0.0422	f1=0.0793	f1_squad=0.1134		loss=8.3075
