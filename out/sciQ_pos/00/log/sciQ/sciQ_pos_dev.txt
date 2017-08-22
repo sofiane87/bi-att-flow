@@ -61,3 +61,11 @@ dev step 4500: accuracy=0.6311	 accuracy_squad=0.6584	f1=0.7453	f1_squad=0.7592	
 dev step 4500: accuracy=0.0025	 accuracy_squad=0.0037	f1=0.0583	f1_squad=0.0706		loss=9.4639
 dev step 4650: accuracy=0.6261	 accuracy_squad=0.6534	f1=0.7448	f1_squad=0.7584		loss=3.7380
 dev step 4650: accuracy=0.0012	 accuracy_squad=0.0012	f1=0.0645	f1_squad=0.0784		loss=9.1268
+dev step 4800: accuracy=0.6224	 accuracy_squad=0.6534	f1=0.7399	f1_squad=0.7540		loss=3.7634
+dev step 4800: accuracy=0.0335	 accuracy_squad=0.0360	f1=0.1000	f1_squad=0.1134		loss=9.6824
+dev step 4950: accuracy=0.5950	 accuracy_squad=0.6211	f1=0.7145	f1_squad=0.7289		loss=3.6741
+dev step 4950: accuracy=0.0248	 accuracy_squad=0.0261	f1=0.0858	f1_squad=0.0978		loss=8.7149
+dev step 5100: accuracy=0.6360	 accuracy_squad=0.6720	f1=0.7607	f1_squad=0.7767		loss=3.8197
+dev step 5100: accuracy=0.0087	 accuracy_squad=0.0099	f1=0.0491	f1_squad=0.0585		loss=9.1768
+dev step 5250: accuracy=0.6224	 accuracy_squad=0.6497	f1=0.7383	f1_squad=0.7520		loss=3.6547
+dev step 5250: accuracy=0.0261	 accuracy_squad=0.0261	f1=0.0491	f1_squad=0.0523		loss=9.0535
