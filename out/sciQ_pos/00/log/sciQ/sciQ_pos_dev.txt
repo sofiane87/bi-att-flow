@@ -87,3 +87,11 @@ dev step 6450: accuracy=0.6298	 accuracy_squad=0.6634	f1=0.7383	f1_squad=0.7550	
 dev step 6450: accuracy=0.0112	 accuracy_squad=0.0137	f1=0.0562	f1_squad=0.0680		loss=9.3104
 dev step 6600: accuracy=0.6211	 accuracy_squad=0.6460	f1=0.7196	f1_squad=0.7352		loss=3.8158
 dev step 6600: accuracy=0.0025	 accuracy_squad=0.0062	f1=0.0549	f1_squad=0.0701		loss=8.9936
+dev step 6750: accuracy=0.6360	 accuracy_squad=0.6671	f1=0.7423	f1_squad=0.7577		loss=3.8982
+dev step 6750: accuracy=0.0199	 accuracy_squad=0.0224	f1=0.0763	f1_squad=0.0864		loss=8.8212
+dev step 6900: accuracy=0.6224	 accuracy_squad=0.6522	f1=0.7292	f1_squad=0.7445		loss=4.0239
+dev step 6900: accuracy=0.0248	 accuracy_squad=0.0261	f1=0.0837	f1_squad=0.0947		loss=8.6614
+dev step 7050: accuracy=0.6199	 accuracy_squad=0.6497	f1=0.7313	f1_squad=0.7456		loss=3.9852
+dev step 7050: accuracy=0.0137	 accuracy_squad=0.0186	f1=0.0728	f1_squad=0.0868		loss=9.0711
+dev step 7200: accuracy=0.6174	 accuracy_squad=0.6422	f1=0.7214	f1_squad=0.7367		loss=3.7778
+dev step 7200: accuracy=0.0286	 accuracy_squad=0.0298	f1=0.0740	f1_squad=0.0842		loss=8.8731
