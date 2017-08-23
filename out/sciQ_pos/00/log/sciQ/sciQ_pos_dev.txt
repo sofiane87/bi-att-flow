@@ -231,3 +231,5 @@ dev step 17250: accuracy=0.5764	 accuracy_squad=0.6000	f1=0.6767	f1_squad=0.6911
 dev step 17250: accuracy=0.6211	 accuracy_squad=0.6497	f1=0.7362	f1_squad=0.7523		loss=4.1872
 dev step 17400: accuracy=0.5714	 accuracy_squad=0.5925	f1=0.6707	f1_squad=0.6839		loss=5.2620
 dev step 17400: accuracy=0.6273	 accuracy_squad=0.6547	f1=0.7367	f1_squad=0.7522		loss=3.8498
+dev step 17550: accuracy=0.5615	 accuracy_squad=0.5826	f1=0.6636	f1_squad=0.6779		loss=5.3376
+dev step 17550: accuracy=0.6261	 accuracy_squad=0.6522	f1=0.7301	f1_squad=0.7446		loss=4.1123
